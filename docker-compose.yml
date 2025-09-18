@@ -1,0 +1,24 @@
+services:
+  geolite-api-service:
+    image: geolite-api:latest
+    container_name: geolite-api-service
+    ports:
+      - "8080:8080"
+    environment:
+      # Optional: Set authentication token for API access
+      # AUTH_TOKEN: your-secret-token-here
+      - PYTHONUNBUFFERED=1
+    volumes:
+      # Optional: Mount database files from host for easier updates
+      - ./GeoLite2-City.mmdb:/app/GeoLite2-City.mmdb:ro
+      - ./GeoLite2-ASN.mmdb:/app/GeoLite2-ASN.mmdb:ro
+      - ./GeoLite2-Country.mmdb:/app/GeoLite2-Country.mmdb:ro
+      # Mount logs directory for persistent logging
+      - ./logs:/app/logs
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "python", "-c", "import requests; requests.get('http://localhost:8080/health', timeout=5)"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s

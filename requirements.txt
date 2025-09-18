@@ -1,0 +1,5 @@
+fastapi
+uvicorn[standard]
+geoip2
+pydantic
+python-multipart
